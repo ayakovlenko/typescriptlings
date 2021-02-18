@@ -3,6 +3,7 @@ import { run } from "./runner.ts";
 const watcher = Deno.watchFs("./exercises");
 
 const fileModifedEvents: Set<string> = new Set();
+fileModifedEvents.add("exercises/test.ts");
 
 const FileModifiedEvent = "file-modified";
 
@@ -14,6 +15,8 @@ window.addEventListener(FileModifiedEvent, () => {
     fileModifedEvents.clear();
   }, 1000);
 });
+
+window.dispatchEvent(new Event(FileModifiedEvent));
 
 for await (const event of watcher) {
   const { kind, paths } = event;
