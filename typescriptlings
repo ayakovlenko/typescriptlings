@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+deno run \
+  --config ./tsconfig.json \
+  --allow-run \
+  --allow-read \
+  main.ts
