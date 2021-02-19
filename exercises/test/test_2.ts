@@ -1,9 +1,6 @@
-const fn = (a: number, b: number): void => a + b;
+const x = parseInt(42);
 
-const a = 1;
-const b = "2";
-
-console.log(fn(a, b));
+console.log(x);
 
 // I AM NOT DONE
 // I DON'T NEED A HINT

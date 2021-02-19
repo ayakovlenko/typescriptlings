@@ -1,12 +1,10 @@
-import { relative } from "./deps.ts";
+import { Exercise } from "./exercises.ts";
 
 const d = new TextDecoder();
 
-const run = async (exercisePath: string): Promise<void> => {
-  exercisePath = relative(Deno.cwd(), exercisePath);
-
+const run = async (exercise: Exercise): Promise<[boolean, string]> => {
   const p = Deno.run({
-    cmd: ["deno", "run", exercisePath],
+    cmd: ["deno", "run", exercise.path],
     stdout: "piped",
     stderr: "piped",
   });
@@ -16,17 +14,23 @@ const run = async (exercisePath: string): Promise<void> => {
   let output: string;
   if (success) {
     output = d.decode(await p.output());
-    console.log(`✅ Successfully ran ${exercisePath}!\n`);
-    console.log(output);
-    console.log(`You can keep working on this exercise,
-or jump into the next one by removing the 'I AM NOT DONE' comment.`);
   } else {
     output = d.decode(await p.stderrOutput());
-    console.log(
-      `Compiling of ${exercisePath} failed! Please try again. Here's the output:\n`,
-    );
-    console.log(output);
   }
+  return [success, output];
 };
 
-export { run };
+const isDone = async (exercise: Exercise): Promise<boolean> => {
+  return await true; // TODO
+};
+
+const check = async (exercise: Exercise): Promise<boolean> => {
+  const { success } = await Deno.run({
+    cmd: ["deno", "run", exercise.path],
+    stdout: "null",
+    stderr: "null",
+  }).status();
+  return success;
+};
+
+export { check, isDone, run };
