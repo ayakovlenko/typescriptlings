@@ -5,5 +5,7 @@ const b = "2";
 
 console.log(fn(a, b));
 
+export {};
+
 // I AM NOT DONE
 // I DON'T NEED A HINT

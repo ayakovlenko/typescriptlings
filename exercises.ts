@@ -17,10 +17,14 @@ const exercises: Exercise[] = [
     path: "exercises/test/test_2.ts",
     mode: ExerciseMode.Compile,
   },
-  // {
-  //   path: "exercises/test/test_3.ts",
-  //   mode: ExerciseMode.Compile,
-  // },
+  {
+    path: "exercises/test/test_3.ts",
+    mode: ExerciseMode.Compile,
+  },
+  {
+    path: "exercises/test/test_4.ts",
+    mode: ExerciseMode.Compile,
+  },
 ];
 
 export type { Exercise };
