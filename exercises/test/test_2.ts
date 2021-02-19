@@ -6,3 +6,4 @@ const b = "2";
 console.log(fn(a, b));
 
 // I AM NOT DONE
+// I DON'T NEED A HINT
