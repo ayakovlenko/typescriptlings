@@ -1,4 +1,4 @@
-import { normalize } from "https://deno.land/std@0.88.0/path/win32.ts";
+import { osNormalize } from "./path_util.ts";
 
 enum ExerciseMode {
   Compile,
@@ -10,7 +10,7 @@ class Exercise {
   public readonly mode: ExerciseMode;
 
   constructor({ path, mode }: { path: string; mode: ExerciseMode }) {
-    this.path = normalize(path);
+    this.path = osNormalize(path);
     this.mode = mode;
   }
 }
