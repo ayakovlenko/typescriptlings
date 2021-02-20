@@ -1,5 +1,5 @@
 import { check, isDone, run } from "./runner.ts";
-import { exercises } from "./exercises.ts";
+import { exercises } from "./exercise.data.ts";
 import { State } from "./state.ts";
 import { relative } from "./deps.ts";
 import * as ui from "./ui.ts";

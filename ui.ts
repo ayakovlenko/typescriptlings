@@ -1,4 +1,4 @@
-import { Exercise } from "./exercises.ts";
+import { Exercise } from "./exercise.ts";
 import { Colors } from "./deps.ts";
 
 const congratsAndExit = () => {
