@@ -1,4 +1,5 @@
-import { Exercise, exercises } from "./exercises.ts";
+import { Exercise } from "./exercises.ts";
+import { Colors } from "./deps.ts";
 
 const congratsAndExit = () => {
   console.log("🎉 Congrats! You have finished all the exercises!");
@@ -6,17 +7,23 @@ const congratsAndExit = () => {
 };
 
 const nextInstuctions = () => {
-  console.log(`You can keep working on this exercise,
-or jump into the next one by removing the 'I AM NOT DONE' comment.`);
+  console.log(
+    Colors.yellow(`You can keep working on this exercise,
+or jump into the next one by removing the ${
+      Colors.bgBlack(Colors.white("I AM NOT DONE"))
+    } comment.\n`),
+  );
 };
 
 const successfulRun = (exercise: Exercise) => {
-  console.log(`✅ Successfully ran ${exercise.path}!`);
+  console.log(Colors.green(`✅ Successfully ran ${exercise.path}!`));
 };
 
 const failedRun = (exercise: Exercise) => {
   console.log(
-    `⚠️ Compiling of ${exercise.path} failed! Please try again. Here's the output:\n`,
+    Colors.red(
+      `❌ Compiling of ${exercise.path} failed! Please try again. Here's the output:\n`,
+    ),
   );
 };
 

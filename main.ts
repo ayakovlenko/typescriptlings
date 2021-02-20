@@ -1,71 +1,80 @@
-import { check, run } from "./runner.ts";
+import { check, isDone, run } from "./runner.ts";
 import { exercises } from "./exercises.ts";
 import { State } from "./state.ts";
 import { relative } from "./deps.ts";
-import {
-  congratsAndExit,
-  failedRun,
-  nextInstuctions,
-  successfulRun,
-} from "./ui.ts";
+import * as ui from "./ui.ts";
+
+const FileModifiedEvent = "file-modified";
 
 const state = new State(exercises);
 
 // rewind to the next uncompleted exercise
-let exercise = state.current();
-while (exercise && await check(exercise)) {
-  successfulRun(exercise);
-  exercise = state.next();
-}
+const rewind = async () => {
+  let exercise = state.current();
+  while (exercise && await check(exercise) && await isDone(exercise)) {
+    ui.successfulRun(exercise);
+    exercise = state.next();
+  }
+};
 
-const watcher = Deno.watchFs("./exercises");
-
-const FileModifiedEvent = "file-modified";
+const trigger = () => {
+  const exercise = state.current();
+  if (exercise) {
+    window.dispatchEvent(new Event(FileModifiedEvent));
+  } else {
+    ui.congratsAndExit();
+  }
+};
 
 window.addEventListener(FileModifiedEvent, async () => {
-  const current = state.current();
-  if (current) {
-    const [ok, output] = await run(current);
-    if (ok) {
-      successfulRun(current);
-      console.log(output);
-      if (state.next()) {
-        window.dispatchEvent(new Event(FileModifiedEvent));
-        nextInstuctions();
-      } else {
-        congratsAndExit();
-      }
+  const exercise = state.current();
+  if (exercise) {
+    const [ok, output] = await run(exercise);
+    const done = await isDone(exercise);
+
+    if (ok && done) {
+      state.next();
+      await rewind();
+      trigger();
+    } else if (ok && !done) {
+      ui.successfulRun(exercise);
+      console.log("\n" + output);
+      ui.nextInstuctions();
     } else {
-      failedRun(current);
+      // !ok && done
+      // !ok && !done
+      ui.failedRun(exercise);
       console.log(output);
     }
   }
 });
 
-if (exercise) {
-  window.dispatchEvent(new Event(FileModifiedEvent));
-} else {
-  congratsAndExit();
-}
+await rewind();
+await trigger();
 
 // FS LISTENER
 
-let lastEventTs = performance.now();
-for await (const event of watcher) {
-  const { kind, paths } = event;
-  if (kind === "modify") {
-    const eventTs = performance.now();
-    paths.forEach((path) => {
-      path = relative(Deno.cwd(), path);
-      const current = state.current();
-      if (current && current.path === path) {
-        if (eventTs - lastEventTs > 1000) { // throttling
-          lastEventTs = eventTs;
-          window.dispatchEvent(new Event(FileModifiedEvent));
+const fsListener = async () => {
+  const watcher = Deno.watchFs("./exercises");
+  let lastEventTs = performance.now();
+  for await (const event of watcher) {
+    const { kind, paths } = event;
+    if (kind === "modify") {
+      const eventTs = performance.now();
+      paths.forEach((path) => {
+        path = relative(Deno.cwd(), path);
+        const current = state.current();
+        if (current && current.path === path) {
+          if (eventTs - lastEventTs > 1000) { // throttling
+            lastEventTs = eventTs;
+            window.dispatchEvent(new Event(FileModifiedEvent));
+          }
         }
-      }
-    });
+      });
+    }
   }
-}
+};
+
+fsListener();
 
 export {};

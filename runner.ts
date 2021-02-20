@@ -21,7 +21,7 @@ const run = async (exercise: Exercise): Promise<[boolean, string]> => {
 };
 
 const isDone = async (exercise: Exercise): Promise<boolean> => {
-  return await true; // TODO
+  return !(await Deno.readTextFile(exercise.path)).includes("// I AM NOT DONE");
 };
 
 const check = async (exercise: Exercise): Promise<boolean> => {
