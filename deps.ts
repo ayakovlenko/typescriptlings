@@ -1,3 +1,3 @@
-import { relative } from "https://deno.land/std@0.88.0/path/mod.ts";
+import { normalize, relative } from "https://deno.land/std@0.88.0/path/mod.ts";
 
-export { relative };
+export { normalize, relative };
