@@ -29,7 +29,7 @@ const trigger = () => {
 window.addEventListener(FileModifiedEvent, async () => {
   const exercise = state.current();
   if (exercise) {
-    const [ok, output] = await run(exercise);
+    const { ok, output } = await run(exercise);
     const done = await isDone(exercise);
 
     if (ok && done) {

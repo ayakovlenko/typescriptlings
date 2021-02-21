@@ -13,5 +13,7 @@ Deno.test("next exercise", () => {
   const e2 = new Exercise({ path: "2.ts", mode: "compile" });
   const state = new State([e1, e2]);
 
+  assertEquals(state.current(), e1);
   assertEquals(state.next(), e2);
+  assertEquals(state.current(), e2);
 });

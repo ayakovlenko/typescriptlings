@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
 deno fmt
 deno --unstable lint || exit 1
-deno test
+deno test --allow-run

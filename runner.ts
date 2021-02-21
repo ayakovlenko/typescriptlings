@@ -2,22 +2,28 @@ import { Exercise } from "./exercise.ts";
 
 const d = new TextDecoder();
 
-const run = async (exercise: Exercise): Promise<[boolean, string]> => {
+interface RunResult {
+  ok: boolean;
+  output: string;
+}
+
+const run = async (exercise: Exercise): Promise<RunResult> => {
   const p = Deno.run({
     cmd: ["deno", "run", exercise.path],
     stdout: "piped",
     stderr: "piped",
   });
-
   const { success } = await p.status();
-
   let output: string;
   if (success) {
     output = d.decode(await p.output());
+    p.stderr.close();
   } else {
     output = d.decode(await p.stderrOutput());
+    p.stdout.close();
   }
-  return [success, output];
+  p.close();
+  return { ok: success, output };
 };
 
 const isDone = async (exercise: Exercise): Promise<boolean> => {
@@ -25,11 +31,13 @@ const isDone = async (exercise: Exercise): Promise<boolean> => {
 };
 
 const check = async (exercise: Exercise): Promise<boolean> => {
-  const { success } = await Deno.run({
+  const p = Deno.run({
     cmd: ["deno", "run", exercise.path],
     stdout: "null",
     stderr: "null",
-  }).status();
+  });
+  const { success } = await p.status();
+  p.close();
   return success;
 };
 
