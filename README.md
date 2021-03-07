@@ -5,6 +5,10 @@
 
 ## how to run
 
+[Install](https://deno.land/#installation) Deno.
+
+Run:
+
 ```
 ./typescriptlings
 ```
