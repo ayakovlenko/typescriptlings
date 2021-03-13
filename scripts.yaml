@@ -1,0 +1,22 @@
+scripts:
+  start:
+    cmd: main.ts
+    allow:
+      run: true
+      read: true
+      hrtime: true
+  test:
+    cmd: deno test
+    allow:
+      run: true
+  test-cov:
+    - cmd: deno test --coverage=./cov
+      unstable: true
+      allow:
+        run: true
+    - cmd: deno coverage --unstable --lcov ./cov > cov.lcov
+  lint: deno --unstable lint
+  pr-fix:
+    - deno fmt
+    - vr lint
+    - vr test

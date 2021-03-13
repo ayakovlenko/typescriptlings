@@ -12,10 +12,13 @@ jobs:
       - uses: denolib/setup-deno@v2
         with:
           deno-version: v1.x
+      - name: Install Velociraptor
+        run: deno install -qA -n vr https://deno.land/x/velociraptor@$VERSION/cli.ts
+        env:
+          VERSION: 1.0.0-beta.17
       - name: Run tests
-        run: deno test --coverage=./cov --unstable --allow-run
-      - name: Generate lcov
-        run: deno coverage --unstable --lcov ./cov > cov.lcov
+        run: >
+          vr test-cov
       - name: Upload coverage
         uses: coverallsapp/github-action@v1.1.2
         with:
