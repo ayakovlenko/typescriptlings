@@ -1,7 +1,0 @@
-#!/usr/bin/env sh
-deno run \
-  --config ./tsconfig.json \
-  --allow-run \
-  --allow-read \
-  --allow-hrtime \
-  main.ts
