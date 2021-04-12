@@ -9,9 +9,7 @@ const congratsAndExit = () => {
 const nextInstuctions = () => {
   console.log(
     Colors.yellow(`You can keep working on this exercise,
-or jump into the next one by removing the ${
-      Colors.bgBlack(Colors.white("I AM NOT DONE"))
-    } comment.\n`),
+or jump into the next one by removing the "I AM NOT DONE" comment.\n`),
   );
 };
 
