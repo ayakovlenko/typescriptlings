@@ -1,4 +1,4 @@
-import { Exercise } from "./exercise.ts";
+import { Exercise } from "../src/exercise.ts";
 
 const exercises: Exercise[] = (() => {
   const data: Exercise[] = [

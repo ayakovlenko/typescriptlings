@@ -1,6 +1,6 @@
 scripts:
   start:
-    cmd: main.ts
+    cmd: src/main.ts
     allow:
       run: true
       read: true

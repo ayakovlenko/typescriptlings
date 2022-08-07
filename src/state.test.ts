@@ -1,5 +1,5 @@
 import { assertEquals } from "./deps_test.ts";
-import { Exercise, ExerciseMode } from "./exercise.ts";
+import { Exercise } from "./exercise.ts";
 import { State } from "./state.ts";
 
 Deno.test("no more exercises", () => {

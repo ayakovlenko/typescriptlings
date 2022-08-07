@@ -7,9 +7,9 @@ interface RunResult {
   output: string;
 }
 
-const run = async (exercise: Exercise): Promise<RunResult> => {
+const check = async (exercise: Exercise): Promise<RunResult> => {
   const p = Deno.run({
-    cmd: ["deno", "run", exercise.path],
+    cmd: ["deno", "check", exercise.path],
     stdout: "piped",
     stderr: "piped",
   });
@@ -30,15 +30,4 @@ const isDone = async (exercise: Exercise): Promise<boolean> => {
   return !(await Deno.readTextFile(exercise.path)).includes("// I AM NOT DONE");
 };
 
-const check = async (exercise: Exercise): Promise<boolean> => {
-  const p = Deno.run({
-    cmd: ["deno", "run", exercise.path],
-    stdout: "null",
-    stderr: "null",
-  });
-  const { success } = await p.status();
-  p.close();
-  return success;
-};
-
-export { check, isDone, run };
+export { check, isDone };

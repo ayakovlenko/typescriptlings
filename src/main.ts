@@ -1,5 +1,5 @@
-import { check, isDone, run } from "./runner.ts";
-import { exercises } from "./exercise.data.ts";
+import { check, isDone } from "./runner.ts";
+import { exercises } from "../exercises/index.ts";
 import { State } from "./state.ts";
 import { relative } from "./deps.ts";
 import * as ui from "./ui.ts";
@@ -29,7 +29,7 @@ const trigger = () => {
 window.addEventListener(FileModifiedEvent, async () => {
   const exercise = state.current();
   if (exercise) {
-    const { ok, output } = await run(exercise);
+    const { ok, output } = await check(exercise);
     const done = await isDone(exercise);
 
     if (ok && done) {
