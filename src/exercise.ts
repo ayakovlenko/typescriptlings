@@ -7,10 +7,12 @@ const osNormalize = (p: string): string => isWindows ? normalize(p) : p;
 class Exercise {
   public readonly path: string;
   public readonly mode: ExerciseMode;
+  public readonly hint?: string;
 
-  constructor({ path, mode }: { path: string; mode: ExerciseMode }) {
+  constructor({ path, mode, hint }: { path: string; mode: ExerciseMode, hint?: string }) {
     this.path = osNormalize(path);
     this.mode = mode;
+    this.hint = hint;
   }
 }
 

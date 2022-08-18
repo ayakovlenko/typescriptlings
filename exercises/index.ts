@@ -5,6 +5,7 @@ const exercises: Exercise[] = (() => {
     {
       path: "exercises/test/test_1.ts",
       mode: "compile",
+      hint: "check the documentation of console: https://developer.mozilla.org/en-US/docs/Web/API/console"
     },
     {
       path: "exercises/test/test_2.ts",

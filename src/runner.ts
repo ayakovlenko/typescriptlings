@@ -30,4 +30,8 @@ const isDone = async (exercise: Exercise): Promise<boolean> => {
   return !(await Deno.readTextFile(exercise.path)).includes("// I AM NOT DONE");
 };
 
-export { check, isDone };
+const isHintNeeded = async (exercise: Exercise): Promise<boolean> => {
+  return (await Deno.readTextFile(exercise.path)).includes("// HINT");
+};
+
+export { check, isDone, isHintNeeded };

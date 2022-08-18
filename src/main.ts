@@ -1,4 +1,4 @@
-import { check, isDone } from "./runner.ts";
+import { check, isDone, isHintNeeded, needsAHint } from "./runner.ts";
 import { exercises } from "../exercises/index.ts";
 import { State } from "./state.ts";
 import { relative } from "./deps.ts";
@@ -11,7 +11,12 @@ const state = new State(exercises);
 // rewind to the next uncompleted exercise
 const rewind = async () => {
   let exercise = state.current();
-  while (exercise && await check(exercise) && await isDone(exercise)) {
+
+  while (
+    exercise /* not the initial state */ &&
+    await check(exercise) /* exercise checks */ &&
+    await isDone(exercise) /* exercise is marked as done */
+  ) {
     ui.successfulRun(exercise);
     exercise = state.next();
   }
@@ -31,8 +36,15 @@ window.addEventListener(FileModifiedEvent, async () => {
   if (exercise) {
     const { ok, output } = await check(exercise);
     const done = await isDone(exercise);
+    const hint = await isHintNeeded(exercise);
 
-    if (ok && done) {
+    if (hint) {
+      if (exercise.hint) {
+        console.log(exercise.hint);
+      } else {
+        console.log("this exercise doesn't have a hint :(")
+      }
+    } else if (ok && done) {
       state.next();
       await rewind();
       trigger();

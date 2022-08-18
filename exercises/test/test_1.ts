@@ -1,6 +1,5 @@
-console.lg("hello world");
+console.log("hello world");
 
 export {};
 
 // I AM NOT DONE
-// I DON'T NEED A HINT
