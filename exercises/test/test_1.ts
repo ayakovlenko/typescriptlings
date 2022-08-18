@@ -1,4 +1,4 @@
-console.log("hello world");
+console.lg("hello world");
 
 export {};
 
