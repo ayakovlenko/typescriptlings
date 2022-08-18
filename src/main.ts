@@ -42,7 +42,7 @@ window.addEventListener(FileModifiedEvent, async () => {
       if (exercise.hint) {
         console.log(exercise.hint);
       } else {
-        console.log("this exercise doesn't have a hint :(")
+        console.log("this exercise doesn't have a hint :(");
       }
     } else if (ok && done) {
       state.next();
@@ -57,6 +57,7 @@ window.addEventListener(FileModifiedEvent, async () => {
       // !ok && !done
       ui.failedRun(exercise);
       console.log(output);
+      ui.hintInstuctions();
     }
   }
 });

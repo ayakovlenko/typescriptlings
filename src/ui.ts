@@ -13,6 +13,12 @@ or jump into the next one by removing the "I AM NOT DONE" comment.\n`),
   );
 };
 
+const hintInstuctions = () => {
+  console.log(
+    Colors.yellow(`To show a hint — add "// HINT" comment anywhere in the code.\n`),
+  );
+};
+
 const successfulRun = (exercise: Exercise) => {
   console.log(Colors.green(`✅ Successfully ran ${exercise.path}!`));
 };
@@ -25,4 +31,4 @@ const failedRun = (exercise: Exercise) => {
   );
 };
 
-export { congratsAndExit, failedRun, nextInstuctions, successfulRun };
+export { congratsAndExit, failedRun, nextInstuctions, successfulRun, hintInstuctions };
