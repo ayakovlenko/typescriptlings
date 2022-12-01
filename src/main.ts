@@ -33,9 +33,8 @@ class FsEventSubscriber implements Subscriber<FsEvent> {
       const done = await isDone(exercise);
 
       if (ok && done) {
-        state.next();
-        await rewind();
         // trigger next exercise
+        await rewind();
         this.checkExercise();
       } else if (ok && !done) {
         ui.successfulRun(exercise);
