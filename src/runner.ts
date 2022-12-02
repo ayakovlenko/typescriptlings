@@ -1,33 +1,31 @@
 import { Exercise } from "./exercise.ts";
 
-const d = new TextDecoder();
+const __decoder = new TextDecoder();
+const __decode = (bs: Uint8Array) => __decoder.decode(bs);
 
 interface RunResult {
   ok: boolean;
   output: string;
 }
 
-const check = async (exercise: Exercise): Promise<RunResult> => {
-  const p = Deno.run({
-    cmd: ["deno", "check", exercise.path],
+async function typeCheck({ path }: Exercise): Promise<RunResult> {
+  const cmd = new Deno.Command(Deno.execPath(), {
+    args: ["check", path],
     stdout: "piped",
     stderr: "piped",
   });
-  const { success } = await p.status();
-  let output: string;
-  if (success) {
-    output = d.decode(await p.output());
-    p.stderr.close();
-  } else {
-    output = d.decode(await p.stderrOutput());
-    p.stdout.close();
-  }
-  p.close();
+
+  cmd.spawn();
+
+  const { success } = await cmd.status;
+  const { stdout, stderr } = await cmd.output();
+  const output = __decode(success ? stdout : stderr);
   return { ok: success, output };
-};
+}
 
-const isDone = async (exercise: Exercise): Promise<boolean> => {
-  return !(await Deno.readTextFile(exercise.path)).includes("// I AM NOT DONE");
-};
+async function isDone(exercise: Exercise): Promise<boolean> {
+  const text = await Deno.readTextFile(exercise.path);
+  return !text.includes("// I AM NOT DONE");
+}
 
-export { check, isDone };
+export { isDone, typeCheck };
