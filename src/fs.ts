@@ -7,28 +7,20 @@ type FsEvent = {
   flag?: Deno.FsEventFlag;
 };
 
-type FsEventPublisherOpts = {
+type FsEventObservableOpts = {
   watch: string;
+  observer: Observer<FsEvent>;
 };
 
-class FsEventPublisher {
+class FsEventObservable {
   private readonly watch: string;
+  private readonly observer: Observer<FsEvent>;
 
-  constructor({ watch }: FsEventPublisherOpts) {
-    this.watch = watch;
-  }
-
-  private subscribers: Subscriber<FsEvent>[] = [];
   private buffer: FsEvent[] = [];
 
-  addSubscriber(subscriber: Subscriber<FsEvent>) {
-    this.subscribers.push(subscriber);
-  }
-
-  private notifySubscribers(event: FsEvent) {
-    for (const subscriber of this.subscribers) {
-      subscriber.update(event);
-    }
+  constructor({ watch, observer }: FsEventObservableOpts) {
+    this.watch = watch;
+    this.observer = observer;
   }
 
   async start() {
@@ -36,12 +28,8 @@ class FsEventPublisher {
       recursive: true,
     });
 
-    // notify subscribers every X millisecond
     setInterval(() => {
       const events = [...this.buffer];
-      if (this.buffer.length > events.length) { // ???????
-        return;
-      }
       this.buffer = [];
 
       // deduplicate events
@@ -52,7 +40,7 @@ class FsEventPublisher {
           ).map(([_, events]) => maxBy(events!, (e) => e.ts)!),
         (e) => e.ts,
       ).forEach((event) => {
-        this.notifySubscribers(event);
+        this.observer.update(event);
       });
     }, 100);
 
@@ -73,10 +61,10 @@ class FsEventPublisher {
   }
 }
 
-interface Subscriber<A> {
+interface Observer<A> {
   update(event: A): void | PromiseLike<void>;
 }
 
-export { FsEventPublisher };
+export { FsEventObservable };
 
-export type { FsEvent, Subscriber };
+export type { FsEvent, Observer };

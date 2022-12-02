@@ -2,22 +2,19 @@ import { check, isDone } from "./runner.ts";
 import { exercises } from "../exercises/index.ts";
 import { State } from "./state.ts";
 import * as ui from "./ui.ts";
-import { FsEvent, FsEventPublisher, Subscriber } from "./fs.ts";
+import { FsEvent, FsEventObservable, Observer } from "./fs.ts";
 
-const state = new State(exercises);
-
-// rewind to the next uncompleted exercise
-const rewind = async () => {
-  let exercise = state.current();
-  while (exercise && await check(exercise) && await isDone(exercise)) {
-    ui.successfulRun(exercise);
-    exercise = state.next();
-  }
+type TypeScriptlingsOpts = {
+  state: State;
 };
 
-// FS LISTENER
+class TypeScriptlings implements Observer<FsEvent> {
+  private readonly state: State;
 
-class FsEventSubscriber implements Subscriber<FsEvent> {
+  constructor({ state }: TypeScriptlingsOpts) {
+    this.state = state;
+  }
+
   update({ kind }: FsEvent): void | PromiseLike<void> {
     switch (kind) {
       case "modify": {
@@ -27,14 +24,14 @@ class FsEventSubscriber implements Subscriber<FsEvent> {
   }
 
   async checkExercise() {
-    const exercise = state.current();
+    const exercise = this.state.current();
     if (exercise) {
       const { ok, output } = await check(exercise);
       const done = await isDone(exercise);
 
       if (ok && done) {
         // trigger next exercise
-        await rewind();
+        await this.rewind();
         this.checkExercise();
       } else if (ok && !done) {
         ui.successfulRun(exercise);
@@ -50,17 +47,26 @@ class FsEventSubscriber implements Subscriber<FsEvent> {
       ui.congratsAndExit();
     }
   }
+
+  async rewind() {
+    let exercise = this.state.current();
+    while (exercise && await check(exercise) && await isDone(exercise)) {
+      ui.successfulRun(exercise);
+      exercise = this.state.next();
+    }
+  }
 }
 
-const fsEventPublisher = new FsEventPublisher({
-  watch: "./exercises",
+const tslings = new TypeScriptlings({
+  state: new State(exercises),
 });
-fsEventPublisher.start();
 
-const fsEventSubscriber = new FsEventSubscriber();
-fsEventPublisher.addSubscriber(fsEventSubscriber);
+new FsEventObservable({
+  watch: "./exercises",
+  observer: tslings,
+}).start();
 
-await rewind();
-fsEventSubscriber.checkExercise();
+await tslings.rewind();
+tslings.checkExercise();
 
 export {};
