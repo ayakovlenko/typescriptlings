@@ -1,18 +1,21 @@
-import { check, isDone } from "./runner.ts";
 import { exercises } from "../exercises/index.ts";
 import { State } from "./state.ts";
 import * as ui from "./ui.ts";
 import { FsEvent, FsEventObservable, Observer } from "./fs.ts";
+import { Runner } from "./runner.ts";
 
 type TypeScriptlingsOpts = {
   state: State;
+  runner: Runner;
 };
 
 class TypeScriptlings implements Observer<FsEvent> {
   private readonly state: State;
+  private readonly runner: Runner;
 
-  constructor({ state }: TypeScriptlingsOpts) {
+  constructor({ state, runner }: TypeScriptlingsOpts) {
     this.state = state;
+    this.runner = runner;
   }
 
   update({ kind }: FsEvent): void | PromiseLike<void> {
@@ -26,8 +29,8 @@ class TypeScriptlings implements Observer<FsEvent> {
   async checkExercise() {
     const exercise = this.state.current();
     if (exercise) {
-      const { ok, output } = await check(exercise);
-      const done = await isDone(exercise);
+      const { ok, output } = await this.runner.typeCheck(exercise);
+      const done = await this.runner.isDone(exercise);
 
       if (ok && done) {
         // trigger next exercise
@@ -50,7 +53,11 @@ class TypeScriptlings implements Observer<FsEvent> {
 
   async rewind() {
     let exercise = this.state.current();
-    while (exercise && await check(exercise) && await isDone(exercise)) {
+    while (
+      exercise &&
+      await this.runner.typeCheck(exercise) &&
+      await this.runner.isDone(exercise)
+    ) {
       ui.successfulRun(exercise);
       exercise = this.state.next();
     }
@@ -59,6 +66,7 @@ class TypeScriptlings implements Observer<FsEvent> {
 
 const tslings = new TypeScriptlings({
   state: new State(exercises),
+  runner: new Runner(),
 });
 
 new FsEventObservable({

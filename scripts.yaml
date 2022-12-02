@@ -1,6 +1,7 @@
 scripts:
   start:
     cmd: src/main.ts
+    unstable: true
     allow:
       run: true
       read: true

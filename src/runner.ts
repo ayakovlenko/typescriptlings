@@ -8,24 +8,26 @@ interface RunResult {
   output: string;
 }
 
-async function typeCheck({ path }: Exercise): Promise<RunResult> {
-  const cmd = new Deno.Command(Deno.execPath(), {
-    args: ["check", path],
-    stdout: "piped",
-    stderr: "piped",
-  });
+class Runner {
+  async typeCheck({ path }: Exercise): Promise<RunResult> {
+    const cmd = new Deno.Command(Deno.execPath(), {
+      args: ["check", path],
+      stdout: "piped",
+      stderr: "piped",
+    });
 
-  cmd.spawn();
+    cmd.spawn();
 
-  const { success } = await cmd.status;
-  const { stdout, stderr } = await cmd.output();
-  const output = __decode(success ? stdout : stderr);
-  return { ok: success, output };
+    const { success } = await cmd.status;
+    const { stdout, stderr } = await cmd.output();
+    const output = __decode(success ? stdout : stderr);
+    return { ok: success, output };
+  }
+
+  async isDone(exercise: Exercise): Promise<boolean> {
+    const text = await Deno.readTextFile(exercise.path);
+    return !text.includes("// I AM NOT DONE");
+  }
 }
 
-async function isDone(exercise: Exercise): Promise<boolean> {
-  const text = await Deno.readTextFile(exercise.path);
-  return !text.includes("// I AM NOT DONE");
-}
-
-export { isDone, typeCheck };
+export { Runner };
