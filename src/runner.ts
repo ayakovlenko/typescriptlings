@@ -16,9 +16,9 @@ class Runner {
       stderr: "piped",
     });
 
-    cmd.spawn();
+    const p = cmd.spawn();
+    const { success } = await p.status;
 
-    const { success } = await cmd.status;
     const { stdout, stderr } = await cmd.output();
     const output = __decode(success ? stdout : stderr);
     return { ok: success, output };
