@@ -1,3 +1,5 @@
+// deno-lint-ignore-file
+
 const x = parseInt(42);
 
 console.log(x);

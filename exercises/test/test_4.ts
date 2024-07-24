@@ -1,3 +1,5 @@
+// deno-lint-ignore-file
+
 interface Person {
   firstName: string;
   lastName: string;

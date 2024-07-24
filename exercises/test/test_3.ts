@@ -1,3 +1,5 @@
+// deno-lint-ignore-file
+
 const fn = (a: number, b: number): void => a + b;
 
 const a = 1;

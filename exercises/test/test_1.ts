@@ -1,3 +1,5 @@
+// deno-lint-ignore-file
+
 console.lg("hello world");
 
 export {};

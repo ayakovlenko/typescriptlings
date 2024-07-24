@@ -1,0 +1,9 @@
+{
+  "tasks": {
+    "start": "deno run --allow-run --allow-read --allow-hrtime src/main.ts",
+    "test": "deno test --allow-run",
+    "test-cov": "deno test --allow-run --coverage=./cov && deno coverage --lcov ./cov > cov.lcov",
+    "lint": "deno lint",
+    "pr-fix": "deno fmt && deno task lint && deno task test"
+  }
+}
