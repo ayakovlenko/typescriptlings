@@ -8,22 +8,23 @@ interface RunResult {
 }
 
 const check = async (exercise: Exercise): Promise<RunResult> => {
-  const p = Deno.run({
-    cmd: ["deno", "check", exercise.path],
+  const p = new Deno.Command("deno", {
+    args: ["check", exercise.path],
     stdout: "piped",
     stderr: "piped",
   });
-  const { success } = await p.status();
-  let output: string;
-  if (success) {
-    output = d.decode(await p.output());
-    p.stderr.close();
+
+  const { code, stdout, stderr } = await p.output();
+
+  const ok = code === 0;
+
+  let output: Uint8Array;
+  if (ok) {
+    output = stdout;
   } else {
-    output = d.decode(await p.stderrOutput());
-    p.stdout.close();
+    output = stderr;
   }
-  p.close();
-  return { ok: success, output };
+  return { ok, output: new TextDecoder().decode(output) };
 };
 
 const isDone = async (exercise: Exercise): Promise<boolean> => {
