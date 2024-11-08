@@ -2,9 +2,8 @@ import { groupBy, maxBy, sortBy } from "./deps.ts";
 
 type FsEvent = {
   ts: number;
-  kind: "any" | "access" | "create" | "modify" | "remove" | "other";
+  kind: Deno.FsEvent["kind"];
   path: string;
-  flag?: Deno.FsEventFlag;
 };
 
 type FsEventObservableOpts = {
@@ -45,14 +44,13 @@ class FsEventObservable {
     }, 100);
 
     for await (const event of watcher) {
-      const { kind, paths, flag } = event;
+      const { kind, paths } = event;
 
       for (const path of paths) {
-        const event = {
+        const event: FsEvent = {
           ts: performance.now(),
           kind,
           path,
-          flag,
         };
 
         this.buffer.push(event);
