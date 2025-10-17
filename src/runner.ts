@@ -1,7 +1,5 @@
 import { Exercise } from "./exercise.ts";
 
-const d = new TextDecoder();
-
 interface RunResult {
   ok: boolean;
   output: string;
