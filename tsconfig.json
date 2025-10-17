@@ -2,7 +2,5 @@
   "compilerOptions": {
     "strict": true
   },
-  "exclude": [
-    "exercises"
-  ]
+  "exclude": ["exercises"]
 }
