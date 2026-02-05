@@ -1,9 +1,10 @@
 import { Exercise } from "./exercise.ts";
 import { Colors } from "./deps.ts";
+import process from "node:process";
 
 const congratsAndExit = () => {
   console.log("🎉 Congrats! You have finished all the exercises!");
-  Deno.exit(0);
+  process.exit(0);
 };
 
 const nextInstuctions = () => {

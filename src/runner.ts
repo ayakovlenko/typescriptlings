@@ -1,4 +1,5 @@
 import { Exercise } from "./exercise.ts";
+import { readFile } from "node:fs/promises";
 
 interface RunResult {
   ok: boolean;
@@ -26,7 +27,7 @@ const check = async (exercise: Exercise): Promise<RunResult> => {
 };
 
 const isDone = async (exercise: Exercise): Promise<boolean> => {
-  return !(await Deno.readTextFile(exercise.path)).includes("// I AM NOT DONE");
+  return !(await readFile(exercise.path, "utf-8")).includes("// I AM NOT DONE");
 };
 
 export { check, isDone };
